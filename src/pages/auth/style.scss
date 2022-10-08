@@ -1,0 +1,39 @@
+.auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  &__top {
+    text-align: center;
+    margin-bottom: 50px;
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 18px;
+      opacity: 0.5;
+    }
+  }
+
+  &-link {
+    display: block;
+    font-size: 16px;
+    text-align: center;
+    color: #adadad;
+  }
+
+  .button {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .block {
+    width: 430px;
+  }
+}
