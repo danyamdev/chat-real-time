@@ -5,6 +5,11 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 import { Block, Button } from 'components';
 
+export type TValues = {
+  login: string;
+  password: string;
+}
+
 interface IForm {
   title: string;
   description: string;
@@ -12,6 +17,7 @@ interface IForm {
   buttonText: string;
   link: string;
   linkText: string;
+  onFinish: (values: TValues) => void;
 }
 
 const Form: React.FC<IForm> = ({
@@ -21,11 +27,8 @@ const Form: React.FC<IForm> = ({
   buttonText,
   link,
   linkText,
+  onFinish,
 }) => {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
-
   return (
     <>
       <div className="auth__top">
