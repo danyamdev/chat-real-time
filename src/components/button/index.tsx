@@ -11,14 +11,14 @@ interface TButton {
   size?: SizeType;
   type?: ButtonType;
   onClick?: () => void;
-  htmlType?: ButtonHTMLType
-};
+  htmlType?: ButtonHTMLType;
+}
 
 const Button: React.FC<TButton> = (props) => (
   <BaseButton
     {...props}
     className={`button ${props.className} 
-    ${props.size === "large" ? "button--large" : ""}`}
+    ${props.size === 'large' ? 'button--large' : ''}`}
   />
 );
 

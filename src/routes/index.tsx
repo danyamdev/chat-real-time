@@ -10,11 +10,11 @@ export type TRoute = {
 
 export const routes: TRoute[] = [
   {
-    path: "/",
-    element: <Auth children={<LoginForm />}/>,
+    path: '/',
+    element: <Auth children={<LoginForm />} />,
   },
   {
-    path: "/register",
-    element: <Auth children={<RegisterForm />}/>,
+    path: '/register',
+    element: <Auth children={<RegisterForm />} />,
   },
 ];
