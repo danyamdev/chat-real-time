@@ -8,9 +8,9 @@ import { Block, Button } from 'components';
 interface IForm {
   title: string;
   description: string;
-  formName: string
+  formName: string;
   buttonText: string;
-  link: string,
+  link: string;
   linkText: string;
 }
 
@@ -20,12 +20,12 @@ const Form: React.FC<IForm> = ({
   formName,
   buttonText,
   link,
-  linkText
-  }) => {
+  linkText,
+}) => {
   const onFinish = (values: any) => {
     console.log('Success:', values);
   };
-  
+
   return (
     <>
       <div className="auth__top">
@@ -42,7 +42,7 @@ const Form: React.FC<IForm> = ({
             ]}
           >
             <Input
-              prefix={<UserOutlined style={{color: 'rgba(0,0,0,.25)'}}/>}
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               size="large"
               placeholder="login"
             />
@@ -50,12 +50,12 @@ const Form: React.FC<IForm> = ({
           <FormAntd.Item
             name="password"
             rules={[
-              {required: true, message: 'Заполните' },
+              { required: true, message: 'Заполните' },
               { min: 6, max: 8, message: 'Символов от 6 до 8' },
             ]}
           >
             <Input.Password
-              prefix={<LockOutlined style={{color: 'rgba(0,0,0,.25)'}}/>}
+              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               size="large"
               placeholder="Password"
             />
@@ -71,7 +71,7 @@ const Form: React.FC<IForm> = ({
         </FormAntd>
       </Block>
     </>
-  )
+  );
 };
 
 export default Form;

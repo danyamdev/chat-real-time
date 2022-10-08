@@ -6,7 +6,7 @@ const LoginForm: React.FC = () => {
   // const onFinish = (values: any) => {
   //   console.log('Success:', values);
   // };
-  
+
   return (
     <Form
       title="Войти в аккаунт"
@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
       link="/register"
       linkText="Зарегистрироваться"
     />
-  )
+  );
 };
 
 export default LoginForm;
