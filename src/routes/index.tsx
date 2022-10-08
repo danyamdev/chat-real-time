@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { LoginForm, RegisterForm } from '../components';
-import { Auth } from '../pages';
+import { LoginForm, RegisterForm } from 'components';
+import { Auth } from 'pages';
 
 export type TRoute = {
   path: string;

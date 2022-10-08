@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Form } from '../index';
+import { Form } from 'components';
 
 const LoginForm: React.FC = () => {
   // const onFinish = (values: any) => {

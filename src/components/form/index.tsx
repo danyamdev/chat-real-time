@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Form as FormAntd, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
-import { Block, Button } from '../index';
+import { Block, Button } from 'components';
 
 interface IForm {
   title: string;
