@@ -25,6 +25,9 @@
       "components/*": ["components/*"],
       "pages/*": ["pages/*"],
       "routes/*": ["routes/*"],
+      "api/*": ["api/*"],
+      "services/*": ["services/*"],
+      "utils/*": ["utils/*"]
     }
   },
   "include": [

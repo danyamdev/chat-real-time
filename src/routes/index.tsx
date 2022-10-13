@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LoginForm, RegisterForm } from 'components';
-import { Auth } from 'pages';
+import { Auth, ChatRooms, ChatRoom } from 'pages';
 
 export type TRoute = {
   path: string;
@@ -16,5 +16,13 @@ export const routes: TRoute[] = [
   {
     path: '/register',
     element: <Auth children={<RegisterForm />} />,
+  },
+  {
+    path: '/chat-rooms',
+    element: <ChatRooms />,
+  },
+  {
+    path: '/chat-rooms/:id',
+    element: <ChatRoom />,
   },
 ];

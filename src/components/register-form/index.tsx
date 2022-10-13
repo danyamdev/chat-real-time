@@ -1,26 +1,18 @@
 import React from 'react';
-import axios from 'axios';
 
 import { Form } from 'components';
 
+import { auth } from 'services/auth';
 import { TValues } from 'components/form';
 
 const RegisterForm: React.FC = () => {
   const onFinish = async (values: TValues) => {
-    try {
-      const response = await axios.post('http://localhost:8000/api/auth/register', values, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      console.log('===>response.data', response.data);
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response.data.message);
-      } else if (error.request) {
-        console.log('Request', error.request);
-      } else {
-        console.log('Error', error.message);
-      }
-    }
+    await auth(
+      values,
+      'register',
+      'Регистрация',
+      'Регистрация прошла успешно!',
+    ).then((res) => console.log(res));
   };
 
   return (
