@@ -1,0 +1,45 @@
+.chat-rooms {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .button {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #002033;
+    margin: 20px 0;
+  }
+
+  hr {
+    margin: 16px 0;
+  }
+
+  &-list {
+    height: 150px;
+    overflow-y: auto;
+  }
+
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 8px 8px 8px 0;
+    margin: 4px 0;
+    cursor: pointer;
+  }
+
+  .block {
+    width: 430px;
+  }
+}

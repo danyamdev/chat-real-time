@@ -1,0 +1,50 @@
+.chat-room {
+  display: flex;
+  background-color: #fff;
+  width: 900px;
+
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 16px;
+  }
+
+  &__sidebar {
+    width: 250px;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f7f7f7;
+      height: 40px;
+      padding: 12px;
+    }
+  }
+
+  &__dialog {
+    flex: 1;
+    position: relative;
+    border-left: 1px solid #f7f7f7;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f7f7f7;
+      height: 40px;
+      padding: 12px;
+    }
+
+    &-name {
+      font-weight: 500;
+    }
+
+    &-messages {
+      padding: 16px;
+      overflow-y: scroll;
+    }
+  }
+}
