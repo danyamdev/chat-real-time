@@ -1,4 +1,3 @@
-import React from 'react';
 import { notification } from 'antd';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -9,8 +8,6 @@ type TNotification = {
   description: string;
 };
 
-const Notification = ({ type, message, description }: TNotification) => {
+export default ({ type, message, description }: TNotification) => {
   notification[type]({ message, description });
 };
-
-export default Notification;

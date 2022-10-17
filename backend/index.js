@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const authRouter = require('./routes/auth');
+const chatRoomRouter = require('./routes/chat-room');
+const messageRouter = require('./routes/message');
 
 const app = express();
 
@@ -11,17 +13,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRouter);
+app.use('/api/chat-room', chatRoomRouter);
+app.use('/api/message', messageRouter);
 
 function start() {
   try {
-    const options = {
-      autoIndex: false,
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      family: 4,
-    };
-
     mongoose.connect(
       'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.0',
       {

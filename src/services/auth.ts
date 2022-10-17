@@ -1,8 +1,7 @@
-import axios from 'axios';
-
-import { Notification } from 'components/index';
-
 import { TValues } from 'components/form';
+
+import { authAPI } from 'api/auth';
+import notification from 'helpers/notification';
 
 export const auth = async (
   values: TValues,
@@ -11,33 +10,27 @@ export const auth = async (
   description: string,
 ) => {
   try {
-    const response = await axios.post(
-      `http://localhost:8000/api/auth/${url}`,
-      values,
-      {
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
+    const response = authAPI.auth(url, values);
 
-    Notification({ type: 'success', message, description });
+    notification({ type: 'success', message, description });
 
     return response;
   } catch (error: any) {
     if (error.response) {
-      Notification({
+      notification({
         type: 'error',
         message: 'Ошибка',
         description: error.response.data.message,
       });
       console.log(error.response.data.message);
     } else if (error.request) {
-      Notification({
+      notification({
         type: 'error',
         message: 'Request',
         description: error.request,
       });
     } else {
-      Notification({
+      notification({
         type: 'error',
         message: 'Error',
         description: error.message,
