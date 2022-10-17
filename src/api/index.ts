@@ -4,12 +4,9 @@ const setupAxios = () => {
   const instance = axios.create({
     baseURL: `http://localhost:8000/api`,
   });
-
-  const token = localStorage?.getItem('token');
-
   instance.interceptors.request.use(async (config) => {
     config.headers = config.headers || {};
-    config.headers['Authorization'] = token;
+    config.headers['Authorization'] = localStorage.getItem('token');
 
     return config;
   });

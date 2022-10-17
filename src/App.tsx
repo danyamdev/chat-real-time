@@ -1,17 +1,50 @@
-import React from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { routes } from 'routes';
+import { initialContext, TContext, TSocketContext } from 'context/index';
+import { installSocket } from 'socket/index';
+
+export const SocketContext = createContext<TSocketContext>({
+  socketContext: initialContext,
+  updateSocketContext: () => {
+    console.log('updating socket context');
+  },
+});
 
 const App: React.FC = () => {
+  const [socketContext, setSocketContext] = useState<TContext>({
+    ...initialContext,
+  });
+
+  const updateSocketContext = useCallback(
+    (updatedValues: Partial<TContext>) => {
+      const targetObj = { ...socketContext, ...updatedValues };
+
+      setSocketContext(targetObj);
+    },
+    [socketContext],
+  );
+
+  useEffect(() => {
+    updateSocketContext({
+      socket: installSocket(),
+      setupSocket: installSocket,
+    });
+  }, []);
+
+  const contextProviderValue = { socketContext, updateSocketContext };
+
   return (
-    <div className="wrapper">
-      <Routes>
-        {routes.map((r) => (
-          <Route key={r.path} path={r.path} element={r.element} />
-        ))}
-      </Routes>
-    </div>
+    <SocketContext.Provider value={contextProviderValue}>
+      <div className="wrapper">
+        <Routes>
+          {routes.map((r) => (
+            <Route key={r.path} path={r.path} element={r.element} />
+          ))}
+        </Routes>
+      </div>
+    </SocketContext.Provider>
   );
 };
 

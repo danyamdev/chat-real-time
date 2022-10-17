@@ -1,14 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form as FormAntd, Input } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { AxiosResponse } from 'axios';
 
 import { Block, Button } from 'components';
+
+import { SocketContext } from '../../App';
 
 export type TValues = {
   login: string;
   password: string;
-}
+};
 
 interface IForm {
   title: string;
@@ -17,7 +20,7 @@ interface IForm {
   buttonText: string;
   link: string;
   linkText: string;
-  onFinish: (values: TValues) => void;
+  onFinish: (values: TValues) => Promise<AxiosResponse<any, any> | undefined>;
 }
 
 const Form: React.FC<IForm> = ({
@@ -29,6 +32,21 @@ const Form: React.FC<IForm> = ({
   linkText,
   onFinish,
 }) => {
+  const { socketContext, updateSocketContext } = useContext(SocketContext);
+  
+  const navigate = useNavigate();
+
+  const onFinishHelper = (values: TValues) => {
+    onFinish(values).then((res) => {
+      if (res?.data.status === 'success') {
+        localStorage.setItem('token', res.data.token);
+        const socket = socketContext.setupSocket();
+        updateSocketContext({ socket: socket });
+        navigate('/chat-rooms');
+      }
+    });
+  };
+
   return (
     <>
       <div className="auth__top">
@@ -36,7 +54,11 @@ const Form: React.FC<IForm> = ({
         <p>{description}</p>
       </div>
       <Block>
-        <FormAntd name={formName} className="auth-form" onFinish={onFinish}>
+        <FormAntd
+          name={formName}
+          className="auth-form"
+          onFinish={onFinishHelper}
+        >
           <FormAntd.Item
             name="login"
             rules={[

@@ -1,12 +1,16 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 const authRouter = require('./routes/auth');
 const chatRoomRouter = require('./routes/chat-room');
 const messageRouter = require('./routes/message');
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
@@ -34,9 +38,38 @@ function start() {
       console.log('MongoDB Connected!');
     });
 
-    app.listen(8000, () => {
+    server.listen(8000, () => {
       console.log('Server listening on port 8000');
     });
+
+    const io = new Server(server, {
+      allowEIO3: true,
+      cors: {
+        origin: true,
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
+
+    io.use(async (socket, next) => {
+      try {
+        const token = socket.handshake.auth.token;
+        const payload = await jwt.verify(token.split(' ')[1], 'qwertyuiop');
+        socket.userId = payload.userId;
+        next();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    io.on('connection', socket => {
+      console.log('Connected: ' + socket.userId);
+
+
+      socket.on('disconnect',  () => {
+        console.log('Disconnected: ' + socket.userId);
+      });
+    })
   } catch (e) {
     console.log('Server Error', e.message);
     process.exit(1);

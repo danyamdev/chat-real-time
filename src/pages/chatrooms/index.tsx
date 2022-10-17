@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input } from 'antd';
 import { WechatOutlined, DeleteTwoTone } from '@ant-design/icons';
@@ -8,6 +8,7 @@ import { Block, Button } from 'components/index';
 
 import { chatRoomAPI } from 'api/chat-room';
 import notification from 'helpers/notification';
+import { SocketContext } from '../../App';
 
 import './styles.scss';
 
@@ -25,6 +26,8 @@ type TChatRoom = {
 };
 
 const ChatRooms: React.FC = () => {
+  const { updateSocketContext } = useContext(SocketContext);
+
   const navigate = useNavigate();
 
   const [user, setUser] = useState<TUser>();
@@ -32,6 +35,11 @@ const ChatRooms: React.FC = () => {
   const [valueChatRoom, setValueChatRoom] = useState<string>('');
 
   const token = localStorage.getItem('token');
+
+  const logOut = () => {
+    updateSocketContext({ socket: null });
+    localStorage.removeItem('token');
+  };
 
   const getChatRoom = (id: string) => navigate(`/chat-rooms/${id}`);
 
@@ -117,7 +125,11 @@ const ChatRooms: React.FC = () => {
           </div>
           <hr />
           <div className="chat-rooms-create">
-            <Form name="chatroom" className="auth-form" onFinish={createChatRoom}>
+            <Form
+              name="chatroom"
+              className="auth-form"
+              onFinish={createChatRoom}
+            >
               <Form.Item
                 name="chatroom"
                 rules={[
@@ -190,7 +202,7 @@ const ChatRooms: React.FC = () => {
             )}
           </div>
           <hr />
-          <Button type="primary" onClick={() => navigate('/')}>
+          <Button type="primary" onClick={logOut}>
             Выйти
           </Button>
         </>
