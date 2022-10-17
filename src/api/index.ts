@@ -5,9 +5,11 @@ const setupAxios = () => {
     baseURL: `http://localhost:8000/api`,
   });
 
+  const token = localStorage?.getItem('token');
+
   instance.interceptors.request.use(async (config) => {
     config.headers = config.headers || {};
-    config.headers['Authorization'] = `Bearer `;
+    config.headers['Authorization'] = token;
 
     return config;
   });

@@ -4,6 +4,17 @@
   align-items: center;
   height: 100%;
 
+  .user {
+    font-size: 16px;
+    margin-bottom: 10px;
+
+    span {
+      display: inline-block;
+      margin-left: 5px;
+      font-weight: bold;
+    }
+  }
+
   .button {
     width: 100%;
     font-size: 14px;
@@ -25,6 +36,13 @@
   &-list {
     height: 150px;
     overflow-y: auto;
+
+    .empty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+    }
   }
 
   &-item {
@@ -34,9 +52,13 @@
 
     font-size: 16px;
     text-transform: uppercase;
-    padding: 8px 8px 8px 0;
+    padding: 8px;
     margin: 4px 0;
-    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
   }
 
   .block {

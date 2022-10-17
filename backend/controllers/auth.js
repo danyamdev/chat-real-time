@@ -17,6 +17,7 @@ module.exports.registration = async (req, res) => {
       return res.status(400).json({
         errors: errors.array(),
         message: 'Неверные данные!',
+        status: 'error'
       });
     }
 
@@ -25,6 +26,7 @@ module.exports.registration = async (req, res) => {
     if (candidate) {
       return res.status(409).json({
         message: 'Пользователь уже существует!',
+        status: 'error'
       });
     }
 
@@ -42,7 +44,11 @@ module.exports.registration = async (req, res) => {
       { expiresIn: '7d' },
     );
 
-    res.status(201).json({ token: `Bearer ${token}`, userId: user._id });
+    res.status(201).json({
+      token: `Bearer ${token}`,
+      userId: user._id,
+      status: 'success'
+    });
   } catch (e) {
     errorHandler(res, e);
   }
@@ -56,6 +62,7 @@ module.exports.login = async (req, res) => {
       return res.status(400).json({
         errors: errors.array(),
         message: 'Неверные данные!',
+        status: 'error'
       });
     }
 
@@ -66,6 +73,7 @@ module.exports.login = async (req, res) => {
     if (!candidate) {
       return res.status(404).json({
         message: 'Пользователь не найден!',
+        status: 'error'
       });
     }
 
@@ -74,6 +82,7 @@ module.exports.login = async (req, res) => {
     if (!passwordResult) {
       return res.status(404).json({
         message: 'Пользователь не найден!',
+        status: 'error'
       });
     }
 
@@ -86,6 +95,7 @@ module.exports.login = async (req, res) => {
     res.status(200).json({
       token: `Bearer ${token}`,
       userId: candidate._id,
+      status: 'success'
     });
   } catch (e) {
     errorHandler(res, e);

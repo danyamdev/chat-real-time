@@ -27,7 +27,8 @@
       "routes/*": ["routes/*"],
       "api/*": ["api/*"],
       "services/*": ["services/*"],
-      "utils/*": ["utils/*"]
+      "utils/*": ["utils/*"],
+      "helpers/*": ["helpers/*"]
     }
   },
   "include": [

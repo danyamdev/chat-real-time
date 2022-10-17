@@ -3,7 +3,6 @@ export { default as Block } from 'components/block';
 export { default as LoginForm } from 'components/login-form';
 export { default as RegisterForm } from 'components/register-form';
 export { default as Form } from 'components/form';
-export { default as Notification } from 'components/notification';
 export { default as Avatar } from 'components/avatar';
 export { default as Time } from 'components/time';
 export { default as ChatInput } from 'components/chat-input';
