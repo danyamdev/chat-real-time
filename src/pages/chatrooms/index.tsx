@@ -26,7 +26,7 @@ type TChatRoom = {
 };
 
 const ChatRooms: React.FC = () => {
-  const { updateSocketContext } = useContext(SocketContext);
+  const { updateSocketContext, socketContext } = useContext(SocketContext);
 
   const navigate = useNavigate();
 
@@ -40,8 +40,6 @@ const ChatRooms: React.FC = () => {
     updateSocketContext({ socket: null });
     localStorage.removeItem('token');
   };
-
-  const getChatRoom = (id: string) => navigate(`/chat-rooms/${id}`);
 
   const createChatRoom = async () => {
     if (token) {
@@ -101,6 +99,14 @@ const ChatRooms: React.FC = () => {
       } catch (e) {
         console.log(e);
       }
+    }
+  };
+
+  const connectToChatRoom = (id: string, ) => {
+    if (socketContext.socket) {
+      socketContext.socket.emit('ROOM:JOIN', id);
+
+      navigate(`/chat-rooms/${id}`);
     }
   };
 
@@ -165,7 +171,7 @@ const ChatRooms: React.FC = () => {
                 <div
                   key={item._id}
                   className="chat-rooms-item"
-                  onClick={() => getChatRoom(item._id)}
+                  onClick={() => connectToChatRoom(item._id)}
                 >
                   {item?.name}
                 </div>
@@ -188,7 +194,7 @@ const ChatRooms: React.FC = () => {
                     <div
                       key={item._id}
                       className="chat-rooms-item"
-                      onClick={() => getChatRoom(item._id)}
+                      onClick={() => connectToChatRoom(item._id)}
                     >
                       {item.name}
                       <span onClick={() => deleteChatRoom(item._id)}>

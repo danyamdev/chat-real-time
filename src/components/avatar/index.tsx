@@ -9,8 +9,8 @@ type TAvatar = {
 };
 
 const Avatar: React.FC<TAvatar> = ({ user }) => {
-  const { color, colorLighten } = generateAvatarFromHash(user._id);
-  const firstChar = user.fullname[0].toUpperCase();
+  const { color, colorLighten } = generateAvatarFromHash(user.login);
+  const firstChar = user.login[0].toUpperCase();
 
   return (
     <div

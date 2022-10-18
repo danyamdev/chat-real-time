@@ -9,6 +9,9 @@ const authRouter = require('./routes/auth');
 const chatRoomRouter = require('./routes/chat-room');
 const messageRouter = require('./routes/message');
 
+const ChatRoom = require('./models/chat-room');
+const User = require('./models/user');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -19,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRouter);
 app.use('/api/chat-room', chatRoomRouter);
 app.use('/api/message', messageRouter);
+
+const rooms = new Map();
 
 function start() {
   try {
@@ -62,14 +67,61 @@ function start() {
       }
     });
 
-    io.on('connection', socket => {
+    io.on('connection', (socket) => {
       console.log('Connected: ' + socket.userId);
 
+      socket.on('ROOM:JOIN', async (chatRoomId) => {
+        try {
+          const chatRoom = await ChatRoom.findById(chatRoomId);
+          const user = await User.findById(socket.userId);
 
-      socket.on('disconnect',  () => {
+          if (!rooms.has(chatRoomId)) {
+            rooms.set(chatRoomId, new Map([['users', new Map()]]));
+          }
+
+          socket.join(chatRoomId, socket.userId);
+
+          const newUser = {
+            login: user.login,
+            userId: socket.userId,
+          };
+
+          rooms.get(chatRoomId).get('users').set(socket.userId, newUser);
+          const users = [...rooms.get(chatRoomId).get('users').values()];
+
+          io.to(chatRoomId).emit('ROOM:SET_USERS', users);
+
+          if (chatRoom?.userId == socket.userId) {
+            io.to(chatRoomId).emit(
+              'ROOM:OWNER',
+              'Подключился создатель беседы!',
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      });
+
+      socket.on('ROOM:LEAVE', () => {
+        rooms.forEach((value, roomId) => {
+          if (value.get('users').delete(socket.userId)) {
+            const users = [...rooms.get(roomId).get('users').values()];
+            io.to(roomId).emit('ROOM:SET_USERS', users);
+          }
+        });
+      });
+
+      socket.on('disconnect', () => {
+        rooms.forEach((value, roomId) => {
+          if (value.get('users').delete(socket.userId)) {
+            const users = [...rooms.get(roomId).get('users').values()];
+            io.to(roomId).emit('ROOM:SET_USERS', users);
+          }
+        });
+
         console.log('Disconnected: ' + socket.userId);
       });
-    })
+    });
   } catch (e) {
     console.log('Server Error', e.message);
     process.exit(1);
