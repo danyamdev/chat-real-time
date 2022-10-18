@@ -62,14 +62,18 @@ const ChatRoom: React.FC = () => {
     setUsers(users);
   };
 
-  const noticeHelper = (obj: { text: string; owner: string }) => {
-    if (obj.owner !== socketContext.user?.userId) {
-      notification({
-        type: 'info',
-        message: 'Уведомление',
-        description: obj.text,
-      });
-    }
+  const noticeHelper = (obj: { text: string; owner: string }) =>
+    obj.owner !== socketContext.user?.userId &&
+    notification({
+      type: 'info',
+      message: 'Уведомление',
+      description: obj.text,
+    });
+
+  const deleteHelper = (obj: { text: string; owner: string }) => {
+    noticeHelper(obj);
+
+    navigate('/chat-rooms');
   };
 
   useEffect(() => {
@@ -78,8 +82,9 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     if (socketContext.socket) {
-      socketContext.socket.on('ROOM:SET_USERS', setUsersHelper);
-      socketContext.socket.on('ROOM:OWNER', noticeHelper);
+      socketContext.socket?.on('ROOM:SET_USERS', setUsersHelper);
+      socketContext.socket?.on('ROOM:OWNER', noticeHelper);
+      socketContext.socket?.on('ROOM:DELETE', deleteHelper);
     }
   }, [socketContext.socket]);
 
@@ -105,9 +110,22 @@ const ChatRoom: React.FC = () => {
           <div className="chat-room__dialog">
             <div className="chat-room__dialog-header">
               <span className="chat-room__dialog-name">{chatRoom?.name}</span>
-              <Button type="primary" onClick={exitHelper}>
-                Выйти
-              </Button>
+              <div className="actions">
+                {chatRoom?.userId === socketContext.user?.userId && (
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      socketContext.socket?.emit('ROOM:DELETE', id);
+                      navigate('/chat-rooms');
+                    }}
+                  >
+                    Удалить
+                  </Button>
+                )}
+                <Button type="primary" onClick={exitHelper}>
+                  Выйти
+                </Button>
+              </div>
             </div>
             <div className="chat-room__dialog-messages">
               <Messages />

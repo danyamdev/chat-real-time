@@ -92,8 +92,8 @@ function start() {
           io.to(chatRoomId).emit('ROOM:SET_USERS', users);
 
           if (chatRoom?.userId == socket.userId) {
-            io.to(chatRoomId).emit('ROOM:OWNER', {
-              text: 'Подключился создатель беседы!',
+            socket.to(chatRoomId).emit('ROOM:OWNER', {
+              text: 'Подключился владелец беседы!',
               owner: socket.userId,
             });
           }
@@ -108,6 +108,16 @@ function start() {
             const users = [...rooms.get(roomId).get('users').values()];
             io.to(roomId).emit('ROOM:SET_USERS', users);
           }
+        });
+      });
+
+      socket.on('ROOM:DELETE', async (chatRoomId) => {
+        const chatRoom = await ChatRoom.deleteOne({ _id: chatRoomId });
+
+
+        socket.broadcast.to(chatRoomId).emit('ROOM:DELETE', {
+          text: 'Владелец удалил беседу!',
+          owner: chatRoom?.userId,
         });
       });
 

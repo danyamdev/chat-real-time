@@ -26,7 +26,6 @@ const ChatRooms: React.FC = () => {
   const [chatRooms, setChatRooms] = useState<TChatRoom[]>([]);
   const [valueChatRoom, setValueChatRoom] = useState<string>('');
 
-
   const logOut = () => {
     updateSocketContext({ socket: null, user: null });
     localStorage.removeItem('token');
@@ -47,7 +46,7 @@ const ChatRooms: React.FC = () => {
             description: response.data.message,
           });
 
-          navigate(`/chat-rooms/${response.data.chatRoomId}`);
+          getChatRooms();
         }
       } catch (e: any) {
         notification({
@@ -75,25 +74,13 @@ const ChatRooms: React.FC = () => {
 
   const deleteChatRoom = async (id: string) => {
     if (socketContext.socket) {
-      try {
-        const response = await chatRoomAPI.deleteChatRoom(id);
+      socketContext.socket.emit('ROOM:DELETE', id);
 
-        if (response.data.status === 'success') {
-          notification({
-            type: 'success',
-            message: 'Чат',
-            description: response.data.message,
-          });
-
-          getChatRooms();
-        }
-      } catch (e) {
-        console.log(e);
-      }
+      getChatRooms();
     }
   };
 
-  const connectToChatRoom = (id: string, ) => {
+  const connectToChatRoom = (id: string) => {
     if (socketContext.socket) {
       socketContext.socket.emit('ROOM:JOIN', id);
 
@@ -175,12 +162,10 @@ const ChatRooms: React.FC = () => {
               chatRooms?.map(
                 (item) =>
                   item.userId === socketContext.user?.userId && (
-                    <div
-                      key={item._id}
-                      className="chat-rooms-item"
-                      onClick={() => connectToChatRoom(item._id)}
-                    >
-                      {item.name}
+                    <div key={item._id} className="chat-rooms-item">
+                      <span onClick={() => connectToChatRoom(item._id)}>
+                        {item.name}
+                      </span>
                       <span onClick={() => deleteChatRoom(item._id)}>
                         <DeleteTwoTone twoToneColor="#eb2f96" />
                       </span>
