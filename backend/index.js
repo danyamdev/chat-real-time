@@ -92,10 +92,10 @@ function start() {
           io.to(chatRoomId).emit('ROOM:SET_USERS', users);
 
           if (chatRoom?.userId == socket.userId) {
-            io.to(chatRoomId).emit(
-              'ROOM:OWNER',
-              'Подключился создатель беседы!',
-            );
+            io.to(chatRoomId).emit('ROOM:OWNER', {
+              text: 'Подключился создатель беседы!',
+              owner: socket.userId,
+            });
           }
         } catch (e) {
           console.log(e);

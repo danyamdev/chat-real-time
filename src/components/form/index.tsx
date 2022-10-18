@@ -40,8 +40,11 @@ const Form: React.FC<IForm> = ({
     onFinish(values).then((res) => {
       if (res?.data.status === 'success') {
         localStorage.setItem('token', res.data.token);
+
+        const payload = JSON.parse(window.atob(res.data.token?.split(' ')[1]?.split('.')[1]));
         const socket = socketContext.setupSocket();
-        updateSocketContext({ socket: socket });
+
+        updateSocketContext({ socket: socket, user: payload });
         navigate('/chat-rooms');
       }
     });

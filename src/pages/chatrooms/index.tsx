@@ -12,13 +12,6 @@ import { SocketContext } from '../../App';
 
 import './styles.scss';
 
-type TUser = {
-  userId: string;
-  login: string;
-  exp: number;
-  iat: number;
-};
-
 type TChatRoom = {
   _id: string;
   name: string;
@@ -30,23 +23,21 @@ const ChatRooms: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<TUser>();
   const [chatRooms, setChatRooms] = useState<TChatRoom[]>([]);
   const [valueChatRoom, setValueChatRoom] = useState<string>('');
 
-  const token = localStorage.getItem('token');
 
   const logOut = () => {
-    updateSocketContext({ socket: null });
+    updateSocketContext({ socket: null, user: null });
     localStorage.removeItem('token');
   };
 
   const createChatRoom = async () => {
-    if (token) {
+    if (socketContext.socket) {
       try {
         const response = await chatRoomAPI.postChatRoom({
           name: valueChatRoom,
-          userId: user?.userId,
+          userId: socketContext.user?.userId,
         });
 
         if (response.data.status === 'success') {
@@ -69,7 +60,7 @@ const ChatRooms: React.FC = () => {
   };
 
   const getChatRooms = async () => {
-    if (token) {
+    if (socketContext.socket) {
       try {
         const response = await chatRoomAPI.getAll();
 
@@ -83,7 +74,7 @@ const ChatRooms: React.FC = () => {
   };
 
   const deleteChatRoom = async (id: string) => {
-    if (token) {
+    if (socketContext.socket) {
       try {
         const response = await chatRoomAPI.deleteChatRoom(id);
 
@@ -111,13 +102,6 @@ const ChatRooms: React.FC = () => {
   };
 
   useEffect(() => {
-    if (token && token?.length > 0) {
-      const payload = JSON.parse(window.atob(token?.split('.')[1]));
-      setUser(payload);
-    }
-  }, [token]);
-
-  useEffect(() => {
     getChatRooms();
   }, []);
 
@@ -127,7 +111,7 @@ const ChatRooms: React.FC = () => {
         <>
           <div className="user">
             Пользователь:
-            <span>{user?.login}</span>
+            <span>{socketContext.user?.login}</span>
           </div>
           <hr />
           <div className="chat-rooms-create">
@@ -190,7 +174,7 @@ const ChatRooms: React.FC = () => {
             {!!chatRooms.length ? (
               chatRooms?.map(
                 (item) =>
-                  item.userId === user?.userId && (
+                  item.userId === socketContext.user?.userId && (
                     <div
                       key={item._id}
                       className="chat-rooms-item"

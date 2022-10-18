@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Empty, Spin } from 'antd';
+import { Empty } from 'antd';
 import classNames from 'classnames';
 
 import { Message } from 'components/index';
 import { messagesAPI } from 'api/messages';
+import { SocketContext } from '../../App';
 
 import './style.scss';
 
@@ -13,14 +14,14 @@ type TParams = {
 };
 
 const Messages: React.FC = () => {
+  const { socketContext } = useContext(SocketContext);
+
   const { id } = useParams<TParams>();
 
   const [messages, setMessages] = useState([]);
 
-  const token = localStorage.getItem('token');
-
   const getMessages = async () => {
-    if (token && id) {
+    if (socketContext.socket && id) {
       try {
         const response = await messagesAPI.getAll(id);
 

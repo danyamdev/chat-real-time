@@ -27,7 +27,7 @@ type TUser = {
 };
 
 const ChatRoom: React.FC = () => {
-  const { updateSocketContext, socketContext } = useContext(SocketContext);
+  const { socketContext } = useContext(SocketContext);
 
   const { id } = useParams<TParams>();
 
@@ -36,10 +36,8 @@ const ChatRoom: React.FC = () => {
   const [chatRoom, setChatRoom] = useState<TChatRoom>();
   const [users, setUsers] = useState<TUser[]>([]);
 
-  const token = localStorage.getItem('token');
-
   const getByIdChatRoom = async () => {
-    if (token && socketContext.socket && id) {
+    if (socketContext.socket && id) {
       try {
         const response = await chatRoomAPI.getById(id);
 
@@ -64,9 +62,15 @@ const ChatRoom: React.FC = () => {
     setUsers(users);
   };
 
-  const noticeHelper = (text: string) => {
-    notification( { type: 'info', message: 'Уведомление', description: text })
-  }
+  const noticeHelper = (obj: { text: string; owner: string }) => {
+    if (obj.owner !== socketContext.user?.userId) {
+      notification({
+        type: 'info',
+        message: 'Уведомление',
+        description: obj.text,
+      });
+    }
+  };
 
   useEffect(() => {
     getByIdChatRoom();
@@ -90,9 +94,9 @@ const ChatRoom: React.FC = () => {
             </div>
 
             <div className="chat-room__sidebar-users">
-              {users.map(user => (
+              {users.map((user) => (
                 <div key={user.userId} className="chat-room__sidebar-user">
-                  <Avatar user={user}/>
+                  <Avatar user={user} />
                   <span>{user.login}</span>
                 </div>
               ))}
@@ -101,7 +105,7 @@ const ChatRoom: React.FC = () => {
           <div className="chat-room__dialog">
             <div className="chat-room__dialog-header">
               <span className="chat-room__dialog-name">{chatRoom?.name}</span>
-              <Button type='primary' onClick={exitHelper}>
+              <Button type="primary" onClick={exitHelper}>
                 Выйти
               </Button>
             </div>
