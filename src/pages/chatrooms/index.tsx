@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input } from 'antd';
 import { WechatOutlined, DeleteTwoTone } from '@ant-design/icons';
@@ -8,15 +8,9 @@ import { Block, Button } from 'components/index';
 
 import { chatRoomAPI } from 'api/chat-room';
 import notification from 'helpers/notification';
+import { SocketContext } from '../../App';
 
 import './styles.scss';
-
-type TUser = {
-  userId: string;
-  login: string;
-  exp: number;
-  iat: number;
-};
 
 type TChatRoom = {
   _id: string;
@@ -25,22 +19,24 @@ type TChatRoom = {
 };
 
 const ChatRooms: React.FC = () => {
+  const { updateSocketContext, socketContext } = useContext(SocketContext);
+
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<TUser>();
   const [chatRooms, setChatRooms] = useState<TChatRoom[]>([]);
   const [valueChatRoom, setValueChatRoom] = useState<string>('');
 
-  const token = localStorage.getItem('token');
-
-  const getChatRoom = (id: string) => navigate(`/chat-rooms/${id}`);
+  const logOut = () => {
+    updateSocketContext({ socket: null, user: null });
+    localStorage.removeItem('token');
+  };
 
   const createChatRoom = async () => {
-    if (token) {
+    if (socketContext.socket) {
       try {
         const response = await chatRoomAPI.postChatRoom({
           name: valueChatRoom,
-          userId: user?.userId,
+          userId: socketContext.user?.userId,
         });
 
         if (response.data.status === 'success') {
@@ -50,7 +46,7 @@ const ChatRooms: React.FC = () => {
             description: response.data.message,
           });
 
-          navigate(`/chat-rooms/${response.data.chatRoomId}`);
+          getChatRooms();
         }
       } catch (e: any) {
         notification({
@@ -63,7 +59,7 @@ const ChatRooms: React.FC = () => {
   };
 
   const getChatRooms = async () => {
-    if (token) {
+    if (socketContext.socket) {
       try {
         const response = await chatRoomAPI.getAll();
 
@@ -77,31 +73,20 @@ const ChatRooms: React.FC = () => {
   };
 
   const deleteChatRoom = async (id: string) => {
-    if (token) {
-      try {
-        const response = await chatRoomAPI.deleteChatRoom(id);
+    if (socketContext.socket) {
+      socketContext.socket.emit('ROOM:DELETE', id);
 
-        if (response.data.status === 'success') {
-          notification({
-            type: 'success',
-            message: 'Чат',
-            description: response.data.message,
-          });
-
-          getChatRooms();
-        }
-      } catch (e) {
-        console.log(e);
-      }
+      getChatRooms();
     }
   };
 
-  useEffect(() => {
-    if (token && token?.length > 0) {
-      const payload = JSON.parse(window.atob(token?.split('.')[1]));
-      setUser(payload);
+  const connectToChatRoom = (id: string) => {
+    if (socketContext.socket) {
+      socketContext.socket.emit('ROOM:JOIN', id);
+
+      navigate(`/chat-rooms/${id}`);
     }
-  }, [token]);
+  };
 
   useEffect(() => {
     getChatRooms();
@@ -113,11 +98,15 @@ const ChatRooms: React.FC = () => {
         <>
           <div className="user">
             Пользователь:
-            <span>{user?.login}</span>
+            <span>{socketContext.user?.login}</span>
           </div>
           <hr />
           <div className="chat-rooms-create">
-            <Form name="chatroom" className="auth-form" onFinish={createChatRoom}>
+            <Form
+              name="chatroom"
+              className="auth-form"
+              onFinish={createChatRoom}
+            >
               <Form.Item
                 name="chatroom"
                 rules={[
@@ -153,7 +142,7 @@ const ChatRooms: React.FC = () => {
                 <div
                   key={item._id}
                   className="chat-rooms-item"
-                  onClick={() => getChatRoom(item._id)}
+                  onClick={() => connectToChatRoom(item._id)}
                 >
                   {item?.name}
                 </div>
@@ -172,13 +161,11 @@ const ChatRooms: React.FC = () => {
             {!!chatRooms.length ? (
               chatRooms?.map(
                 (item) =>
-                  item.userId === user?.userId && (
-                    <div
-                      key={item._id}
-                      className="chat-rooms-item"
-                      onClick={() => getChatRoom(item._id)}
-                    >
-                      {item.name}
+                  item.userId === socketContext.user?.userId && (
+                    <div key={item._id} className="chat-rooms-item">
+                      <span onClick={() => connectToChatRoom(item._id)}>
+                        {item.name}
+                      </span>
                       <span onClick={() => deleteChatRoom(item._id)}>
                         <DeleteTwoTone twoToneColor="#eb2f96" />
                       </span>
@@ -190,7 +177,7 @@ const ChatRooms: React.FC = () => {
             )}
           </div>
           <hr />
-          <Button type="primary" onClick={() => navigate('/')}>
+          <Button type="primary" onClick={logOut}>
             Выйти
           </Button>
         </>

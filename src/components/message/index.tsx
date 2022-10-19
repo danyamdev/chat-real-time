@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import { Tooltip } from 'antd';
 
 import { Avatar, Time } from 'components/index';
 
@@ -7,23 +8,26 @@ import './style.scss';
 
 type TMessage = {
   user: any;
-  date: string;
-  isMe: boolean;
+  message: string;
+  id?: string;
+  time: string;
 };
 
-const Message: React.FC<TMessage> = ({ user, date, isMe }) => (
-  <div className={classNames('message', { 'message--isme': isMe })}>
+const Message: React.FC<TMessage> = ({ user, message, time, id }) => (
+  <div className={classNames('message', { 'message--isme': user._id === id })}>
     <div className="message__content">
-      <div className="message__avatar">
-        <Avatar user={user} />
-      </div>
+      <Tooltip title={user.login}>
+        <div className="message__avatar">
+          <Avatar user={user} />
+        </div>
+      </Tooltip>
       <div className="message__info">
         <div className="message__bubble">
-          <p className="message__text">111</p>
+          <p className="message__text">{message}</p>
         </div>
 
         <span className="message__date">
-          <Time date={date} />
+          <Time date={time} />
         </span>
       </div>
     </div>

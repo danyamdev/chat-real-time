@@ -22,6 +22,26 @@
       height: 40px;
       padding: 12px;
     }
+
+    &-user {
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
+
+      .avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+      }
+
+      span {
+        display: inline-block;
+        margin-left: 8px;
+        font-weight: 600;
+      }
+    }
   }
 
   &__dialog {
@@ -40,11 +60,6 @@
 
     &-name {
       font-weight: 500;
-    }
-
-    &-messages {
-      padding: 16px;
-      overflow-y: scroll;
     }
   }
 }

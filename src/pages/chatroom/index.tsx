@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { TeamOutlined } from '@ant-design/icons';
 
-import { Block, Messages, ChatInput } from 'components/index';
+import { Block, Messages, ChatInput, Button } from 'components/index';
+import Avatar from 'components/avatar';
 
 import { chatRoomAPI } from 'api/chat-room';
+import { SocketContext } from '../../App';
+import notification from 'helpers/notification';
 
 import './styles.scss';
 
@@ -18,15 +21,23 @@ type TChatRoom = {
   name: string;
 };
 
+type TUser = {
+  login: string;
+  userId: string;
+};
+
 const ChatRoom: React.FC = () => {
+  const { socketContext } = useContext(SocketContext);
+
   const { id } = useParams<TParams>();
 
-  const [chatRoom, setChatRoom] = useState<TChatRoom>();
+  const navigate = useNavigate();
 
-  const token = localStorage.getItem('token');
+  const [chatRoom, setChatRoom] = useState<TChatRoom>();
+  const [users, setUsers] = useState<TUser[]>([]);
 
   const getByIdChatRoom = async () => {
-    if (token && id) {
+    if (socketContext.socket && id) {
       try {
         const response = await chatRoomAPI.getById(id);
 
@@ -39,9 +50,43 @@ const ChatRoom: React.FC = () => {
     }
   };
 
+  const exitHelper = () => {
+    if (socketContext.socket) {
+      socketContext.socket.emit('ROOM:LEAVE');
+
+      navigate('/chat-rooms');
+    }
+  };
+
+  const setUsersHelper = (users: TUser[]) => {
+    setUsers(users);
+  };
+
+  const noticeHelper = (obj: { text: string; owner: string }) =>
+    obj.owner !== socketContext.user?.userId &&
+    notification({
+      type: 'info',
+      message: 'Уведомление',
+      description: obj.text,
+    });
+
+  const deleteHelper = (obj: { text: string; owner: string }) => {
+    noticeHelper(obj);
+
+    navigate('/chat-rooms');
+  };
+
   useEffect(() => {
     getByIdChatRoom();
   }, []);
+
+  useEffect(() => {
+    if (socketContext.socket) {
+      socketContext.socket?.on('ROOM:SET_USERS', setUsersHelper);
+      socketContext.socket?.on('ROOM:OWNER', noticeHelper);
+      socketContext.socket?.on('ROOM:DELETE', deleteHelper);
+    }
+  }, [socketContext.socket]);
 
   return (
     <section className="chat-room">
@@ -53,17 +98,41 @@ const ChatRoom: React.FC = () => {
               <span>Список пользователей</span>
             </div>
 
-            <div className="chat-room__sidebar-users">asdasds</div>
+            <div className="chat-room__sidebar-users">
+              {users.map((user) => (
+                <div key={user.userId} className="chat-room__sidebar-user">
+                  <Avatar user={user} />
+                  <span>{user.login}</span>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="chat-room__dialog">
             <div className="chat-room__dialog-header">
               <span className="chat-room__dialog-name">{chatRoom?.name}</span>
+              <div className="actions">
+                {chatRoom?.userId === socketContext.user?.userId && (
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      socketContext.socket?.emit('ROOM:DELETE', id);
+                      navigate('/chat-rooms');
+                    }}
+                    className='delete'
+                  >
+                    Удалить
+                  </Button>
+                )}
+                <Button type="primary" onClick={exitHelper}>
+                  Выйти
+                </Button>
+              </div>
             </div>
             <div className="chat-room__dialog-messages">
               <Messages />
             </div>
             <div className="chat-room__dialog-input">
-              <ChatInput />
+              <ChatInput id={id}/>
             </div>
           </div>
         </>

@@ -8,3 +8,4 @@ export { default as Time } from 'components/time';
 export { default as ChatInput } from 'components/chat-input';
 export { default as Message } from 'components/message';
 export { default as Messages } from 'components/messages';
+export { default as ProtectedRoute } from 'components/protected-route';

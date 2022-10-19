@@ -1,5 +1,7 @@
 .messages {
   height: 500px;
+  padding: 16px;
+  overflow-y: auto;
 
   &-empty {
     display: flex;

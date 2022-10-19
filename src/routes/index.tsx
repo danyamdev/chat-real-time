@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LoginForm, RegisterForm } from 'components';
+import { LoginForm, RegisterForm, ProtectedRoute } from 'components';
 import { Auth, ChatRooms, ChatRoom } from 'pages';
 
 export type TRoute = {
@@ -19,10 +19,18 @@ export const routes: TRoute[] = [
   },
   {
     path: '/chat-rooms',
-    element: <ChatRooms />,
+    element: (
+      <ProtectedRoute>
+        <ChatRooms />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/chat-rooms/:id',
-    element: <ChatRoom />,
+    element: (
+      <ProtectedRoute>
+        <ChatRoom />
+      </ProtectedRoute>
+    ),
   },
 ];

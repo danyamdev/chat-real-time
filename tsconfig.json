@@ -28,7 +28,9 @@
       "api/*": ["api/*"],
       "services/*": ["services/*"],
       "utils/*": ["utils/*"],
-      "helpers/*": ["helpers/*"]
+      "helpers/*": ["helpers/*"],
+      "socket/*": ["socket/*"],
+      "context/*": ["context/*"]
     }
   },
   "include": [

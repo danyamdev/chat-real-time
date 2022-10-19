@@ -10,7 +10,7 @@ export const auth = async (
   description: string,
 ) => {
   try {
-    const response = authAPI.auth(url, values);
+    const response = await authAPI.auth(url, values);
 
     notification({ type: 'success', message, description });
 
