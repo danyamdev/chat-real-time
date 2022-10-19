@@ -11,6 +11,7 @@ const messageRouter = require('./routes/message');
 
 const ChatRoom = require('./models/chat-room');
 const User = require('./models/user');
+const Message = require('./models/message');
 
 const app = express();
 const server = http.createServer(app);
@@ -119,6 +120,20 @@ function start() {
           text: 'Владелец удалил беседу!',
           owner: chatRoom?.userId,
         });
+      });
+
+      socket.on("ROOM:NEW_MESSAGE", async ({ chatRoomId, text }) => {
+        const user = await User.findById(socket.userId);
+
+        const message = new Message({
+          chatroom: chatRoomId,
+          user: socket.userId,
+          message: text
+        });
+
+        await message.save();
+
+        io.to(chatRoomId).emit("ROOM:NEW_MESSAGE", { ...message._doc, user });
       });
 
       socket.on('disconnect', () => {

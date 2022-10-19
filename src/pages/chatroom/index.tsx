@@ -118,6 +118,7 @@ const ChatRoom: React.FC = () => {
                       socketContext.socket?.emit('ROOM:DELETE', id);
                       navigate('/chat-rooms');
                     }}
+                    className='delete'
                   >
                     Удалить
                   </Button>
@@ -131,7 +132,7 @@ const ChatRoom: React.FC = () => {
               <Messages />
             </div>
             <div className="chat-room__dialog-input">
-              <ChatInput />
+              <ChatInput id={id}/>
             </div>
           </div>
         </>
