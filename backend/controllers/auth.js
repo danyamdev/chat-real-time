@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
+const config = require('config');
 
 const User = require('../models/user');
 
@@ -17,7 +18,7 @@ module.exports.registration = async (req, res) => {
       return res.status(400).json({
         errors: errors.array(),
         message: 'Неверные данные!',
-        status: 'error'
+        status: 'error',
       });
     }
 
@@ -26,7 +27,7 @@ module.exports.registration = async (req, res) => {
     if (candidate) {
       return res.status(409).json({
         message: 'Пользователь уже существует!',
-        status: 'error'
+        status: 'error',
       });
     }
 
@@ -40,14 +41,14 @@ module.exports.registration = async (req, res) => {
 
     const token = createJWT(
       { userId: user._id, login: user.login },
-      'qwertyuiop',
-      { expiresIn: '7d' },
+      config.get('JWT_SECRET'),
+      { expiresIn: config.get('EXPIRES_IN') },
     );
 
     res.status(201).json({
       token: `Bearer ${token}`,
       userId: user._id,
-      status: 'success'
+      status: 'success',
     });
   } catch (e) {
     errorHandler(res, e);
@@ -62,7 +63,7 @@ module.exports.login = async (req, res) => {
       return res.status(400).json({
         errors: errors.array(),
         message: 'Неверные данные!',
-        status: 'error'
+        status: 'error',
       });
     }
 
@@ -73,7 +74,7 @@ module.exports.login = async (req, res) => {
     if (!candidate) {
       return res.status(404).json({
         message: 'Пользователь не найден!',
-        status: 'error'
+        status: 'error',
       });
     }
 
@@ -82,20 +83,20 @@ module.exports.login = async (req, res) => {
     if (!passwordResult) {
       return res.status(404).json({
         message: 'Пользователь не найден!',
-        status: 'error'
+        status: 'error',
       });
     }
 
     const token = createJWT(
       { userId: candidate._id, login: candidate.login },
-      'qwertyuiop',
-      { expiresIn: '7d' },
+      config.get('JWT_SECRET'),
+      { expiresIn: config.get('EXPIRES_IN') },
     );
 
     res.status(200).json({
       token: `Bearer ${token}`,
       userId: candidate._id,
-      status: 'success'
+      status: 'success',
     });
   } catch (e) {
     errorHandler(res, e);

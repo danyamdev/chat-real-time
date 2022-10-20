@@ -1,14 +1,15 @@
 import React from 'react';
 
 import generateAvatarFromHash from 'utils/generateAvatarFromHash';
+import { TUser, TUserToken } from 'types/user.type';
 
 import './style.scss';
 
-type TAvatar = {
-  user: any;
-};
+interface IAvatar {
+  user: TUserToken | TUser;
+}
 
-const Avatar: React.FC<TAvatar> = ({ user }) => {
+const Avatar: React.FC<IAvatar> = ({ user }) => {
   const { color, colorLighten } = generateAvatarFromHash(user.login);
   const firstChar = user.login[0].toUpperCase();
 

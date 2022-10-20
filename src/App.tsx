@@ -31,8 +31,10 @@ const App: React.FC = () => {
     const auth: any = socket?.auth;
 
     updateSocketContext({
-      socket: installSocket(),
-      user: socket ? JSON.parse(window.atob(auth.token?.split(' ')[1]?.split('.')[1])) : null,
+      socket: socket,
+      user: socket
+        ? JSON.parse(window.atob(auth.token?.split(' ')[1]?.split('.')[1]))
+        : null,
       setupSocket: installSocket,
     });
   }, []);

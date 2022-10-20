@@ -6,11 +6,11 @@ exports.getById = async (req, res) => {
   try {
     const messages = await Message.find({
       chatroom: req.params.id,
-    }). populate('user');
+    }).populate('user');
 
     res.json({
       status: 'success',
-      messages
+      messages,
     });
   } catch (e) {
     errorHandler(res, e);

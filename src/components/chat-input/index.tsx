@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Input } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 
@@ -6,25 +6,38 @@ import { SocketContext } from '../../App';
 
 import './style.scss';
 
-type TChatInput = {
-  id?: string
+interface IChatInput {
+  id?: string;
 }
 
-const ChatInput: React.FC<TChatInput> = ({ id }) => {
+const ChatInput: React.FC<IChatInput> = ({ id }) => {
   const { socketContext } = useContext(SocketContext);
 
   const [value, setValue] = useState('');
 
   const sendHelper = () => {
     if (socketContext.socket && id && value) {
-      socketContext.socket.emit("ROOM:NEW_MESSAGE", {
+      socketContext.socket.emit('ROOM:NEW_MESSAGE', {
         chatRoomId: id,
-        text: value
+        text: value,
       });
 
       setValue('');
     }
   };
+
+  useEffect(() => {
+    const onKeyDown = (e: any) => {
+      if (e.keyCode === 13) {
+        sendHelper();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
 
   return (
     <div className="chat-input">

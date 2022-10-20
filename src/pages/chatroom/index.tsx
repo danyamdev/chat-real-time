@@ -2,28 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TeamOutlined } from '@ant-design/icons';
 
-import { Block, Messages, ChatInput, Button } from 'components/index';
-import Avatar from 'components/avatar';
+import { Block, Messages, ChatInput, Button, Avatar } from 'components/index';
 
 import { chatRoomAPI } from 'api/chat-room';
 import { SocketContext } from '../../App';
 import notification from 'helpers/notification';
+import { TUserToken } from 'types/user.type';
+import { TChatRoom } from 'types/chat-room.type';
 
 import './styles.scss';
 
 type TParams = {
   id: string;
-};
-
-type TChatRoom = {
-  _id: string;
-  userId: string;
-  name: string;
-};
-
-type TUser = {
-  login: string;
-  userId: string;
 };
 
 const ChatRoom: React.FC = () => {
@@ -34,7 +24,7 @@ const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
 
   const [chatRoom, setChatRoom] = useState<TChatRoom>();
-  const [users, setUsers] = useState<TUser[]>([]);
+  const [users, setUsers] = useState<TUserToken[]>([]);
 
   const getByIdChatRoom = async () => {
     if (socketContext.socket && id) {
@@ -58,7 +48,7 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  const setUsersHelper = (users: TUser[]) => {
+  const setUsersHelper = (users: TUserToken[]) => {
     setUsers(users);
   };
 
@@ -118,7 +108,7 @@ const ChatRoom: React.FC = () => {
                       socketContext.socket?.emit('ROOM:DELETE', id);
                       navigate('/chat-rooms');
                     }}
-                    className='delete'
+                    className="delete"
                   >
                     Удалить
                   </Button>
@@ -132,7 +122,7 @@ const ChatRoom: React.FC = () => {
               <Messages />
             </div>
             <div className="chat-room__dialog-input">
-              <ChatInput id={id}/>
+              <ChatInput id={id} />
             </div>
           </div>
         </>

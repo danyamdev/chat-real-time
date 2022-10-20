@@ -7,11 +7,7 @@ import { AxiosResponse } from 'axios';
 import { Block, Button } from 'components';
 
 import { SocketContext } from '../../App';
-
-export type TValues = {
-  login: string;
-  password: string;
-};
+import { TValues } from 'types/form-values.type';
 
 interface IForm {
   title: string;
@@ -33,7 +29,7 @@ const Form: React.FC<IForm> = ({
   onFinish,
 }) => {
   const { socketContext, updateSocketContext } = useContext(SocketContext);
-  
+
   const navigate = useNavigate();
 
   const onFinishHelper = (values: TValues) => {
@@ -41,7 +37,9 @@ const Form: React.FC<IForm> = ({
       if (res?.data.status === 'success') {
         localStorage.setItem('token', res.data.token);
 
-        const payload = JSON.parse(window.atob(res.data.token?.split(' ')[1]?.split('.')[1]));
+        const payload = JSON.parse(
+          window.atob(res.data.token?.split(' ')[1]?.split('.')[1]),
+        );
         const socket = socketContext.setupSocket();
 
         updateSocketContext({ socket: socket, user: payload });

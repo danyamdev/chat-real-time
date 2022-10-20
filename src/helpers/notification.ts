@@ -1,9 +1,9 @@
 import { notification } from 'antd';
 
-type NotificationType = 'success' | 'info' | 'warning' | 'error';
+type TType = 'success' | 'info' | 'warning' | 'error';
 
 type TNotification = {
-  type: NotificationType;
+  type: TType;
   message: string;
   description: string;
 };
