@@ -4,22 +4,15 @@ import { Empty } from 'antd';
 import classNames from 'classnames';
 
 import { Message } from 'components/index';
+
 import { messagesAPI } from 'api/messages';
 import { SocketContext } from '../../App';
+import { TMessage } from 'types/message.type';
 
 import './style.scss';
 
 type TParams = {
   id: string;
-};
-
-type TMessage = {
-  _id: string;
-  chatroom: string;
-  user: any;
-  message: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 const Messages: React.FC = () => {

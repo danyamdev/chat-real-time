@@ -3,11 +3,11 @@ import { Navigate } from 'react-router-dom';
 
 import { SocketContext } from '../../App';
 
-type TProtectedRoute = {
+interface IProtectedRoute {
   children: JSX.Element;
-};
+}
 
-const ProtectedRoute: React.FC<TProtectedRoute> = ({ children }) => {
+const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
   const { socketContext } = useContext(SocketContext);
 
   if (!socketContext.socket) {

@@ -9,14 +9,9 @@ import { Block, Button } from 'components/index';
 import { chatRoomAPI } from 'api/chat-room';
 import notification from 'helpers/notification';
 import { SocketContext } from '../../App';
+import { TChatRoom } from 'types/chat-room.type';
 
 import './styles.scss';
-
-type TChatRoom = {
-  _id: string;
-  name: string;
-  userId: string;
-};
 
 const ChatRooms: React.FC = () => {
   const { updateSocketContext, socketContext } = useContext(SocketContext);
@@ -32,11 +27,11 @@ const ChatRooms: React.FC = () => {
   };
 
   const createChatRoom = async () => {
-    if (socketContext.socket) {
+    if (socketContext.socket && socketContext.user) {
       try {
         const response = await chatRoomAPI.postChatRoom({
           name: valueChatRoom,
-          userId: socketContext.user?.userId,
+          userId: socketContext.user.userId,
         });
 
         if (response.data.status === 'success') {

@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const config = require('config');
 
 const authRouter = require('./routes/auth');
 const chatRoomRouter = require('./routes/chat-room');
@@ -28,13 +29,10 @@ const rooms = new Map();
 
 function start() {
   try {
-    mongoose.connect(
-      'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.0',
-      {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-      },
-    );
+    mongoose.connect(config.get('DB'), {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    });
 
     mongoose.connection.on('error', (err) => {
       console.log('Mongoose Connection ERROR: ' + err.message);
@@ -44,8 +42,8 @@ function start() {
       console.log('MongoDB Connected!');
     });
 
-    server.listen(8000, () => {
-      console.log('Server listening on port 8000');
+    server.listen(config.get('PORT'), () => {
+      console.log(`Server listening on port ${config.get('PORT')}`);
     });
 
     const io = new Server(server, {
@@ -60,7 +58,7 @@ function start() {
     io.use(async (socket, next) => {
       try {
         const token = socket.handshake.auth.token;
-        const payload = await jwt.verify(token.split(' ')[1], 'qwertyuiop');
+        const payload = await jwt.verify(token.split(' ')[1], config.get('JWT_SECRET'));
         socket.userId = payload.userId;
         next();
       } catch (err) {
@@ -115,25 +113,24 @@ function start() {
       socket.on('ROOM:DELETE', async (chatRoomId) => {
         const chatRoom = await ChatRoom.deleteOne({ _id: chatRoomId });
 
-
         socket.broadcast.to(chatRoomId).emit('ROOM:DELETE', {
           text: 'Владелец удалил беседу!',
           owner: chatRoom?.userId,
         });
       });
 
-      socket.on("ROOM:NEW_MESSAGE", async ({ chatRoomId, text }) => {
+      socket.on('ROOM:NEW_MESSAGE', async ({ chatRoomId, text }) => {
         const user = await User.findById(socket.userId);
 
         const message = new Message({
           chatroom: chatRoomId,
           user: socket.userId,
-          message: text
+          message: text,
         });
 
         await message.save();
 
-        io.to(chatRoomId).emit("ROOM:NEW_MESSAGE", { ...message._doc, user });
+        io.to(chatRoomId).emit('ROOM:NEW_MESSAGE', { ...message._doc, user });
       });
 
       socket.on('disconnect', () => {

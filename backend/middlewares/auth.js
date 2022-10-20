@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const config = require('config');
 
 const errorHandler = require('../utils/error-handler');
 
@@ -12,7 +13,7 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ message: 'Не авторизован!' });
     }
 
-    const decoded = jwt.verify(token, 'qwertyuiop');
+    const decoded = jwt.verify(token, config.get('JWT_SECRET'));
     req.user = decoded;
     next();
   } catch (e) {

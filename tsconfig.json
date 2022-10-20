@@ -30,7 +30,8 @@
       "utils/*": ["utils/*"],
       "helpers/*": ["helpers/*"],
       "socket/*": ["socket/*"],
-      "context/*": ["context/*"]
+      "context/*": ["context/*"],
+      "types/*": ["types/*"]
     }
   },
   "include": [

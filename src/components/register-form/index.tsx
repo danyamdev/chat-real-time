@@ -3,7 +3,7 @@ import React from 'react';
 import { Form } from 'components';
 
 import { auth } from 'services/auth';
-import { TValues } from 'components/form';
+import { TValues } from 'types/form-values.type';
 
 const RegisterForm: React.FC = () => {
   const onFinish = async (values: TValues) =>

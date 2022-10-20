@@ -2,7 +2,10 @@ import { bffAxios } from 'api/index';
 
 export const chatRoomAPI = {
   getAll: () => bffAxios.get('/chat-room/'),
+
   getById: (id: string) => bffAxios.get(`/chat-room/${id}`),
-  postChatRoom: (value: any) => bffAxios.post('/chat-room/create', value),
+
+  postChatRoom: (values: { name: string, userId: string }) => bffAxios.post('/chat-room/create', values),
+
   deleteChatRoom: (id: string) => bffAxios.delete(`/chat-room/${id}`),
 };

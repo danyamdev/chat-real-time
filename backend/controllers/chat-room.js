@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     if (chatRoom) {
       return res.status(409).json({
         message: 'Комната с таким же именем найдена!',
-        status: 'error'
+        status: 'error',
       });
     }
 
@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
     res.json({
       message: 'Чат создан!',
       status: 'success',
-      chatRoomId: chat._id
+      chatRoomId: chat._id,
     });
   } catch (e) {
     errorHandler(res, e);
@@ -61,7 +61,7 @@ module.exports.delete = async (req, res) => {
     res.json({
       status: 'success',
       message: 'Чат удален!',
-      chatroom
+      chatroom,
     });
   } catch (e) {
     errorHandler(res, e);

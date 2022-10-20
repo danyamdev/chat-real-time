@@ -3,11 +3,12 @@ import classNames from 'classnames';
 import { Tooltip } from 'antd';
 
 import { Avatar, Time } from 'components/index';
+import { TUser } from 'types/user.type';
 
 import './style.scss';
 
 type TMessage = {
-  user: any;
+  user: TUser;
   message: string;
   id?: string;
   time: string;

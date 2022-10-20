@@ -1,7 +1,6 @@
-import { TValues } from 'components/form';
-
 import { authAPI } from 'api/auth';
 import notification from 'helpers/notification';
+import { TValues } from 'types/form-values.type';
 
 export const auth = async (
   values: TValues,
