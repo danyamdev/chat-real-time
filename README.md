@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+# Проект "Чат"
+Стек:
+- React
+- TypeScript
+- Ant-Design
+- Express
+- Socket.IO
+- Mongo DB
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Функционал приложения следующий:
+- при первом запуске приложение предлагает пользователю  авторизоваться/зарегистрироваться;
+- выполняется подключение к серверу через веб-сокеты и вход в список комнат;
+- создание комнат, удаление комнат (только своих);
+- можно зайти в комнату, увидеть список пользователей и диалог;
+- пользователи обмениваются сообщениями в реальном времени;
+- сообщение записывается в базу данных;
+- пользователи могут добавлять в текст сообщения эмодзи;
 
-## Available Scripts
+### Запуск проекта:
 
-In the project directory, you can run:
+Устанавливаем сначала зависимости для `фронта`.
+```
+yarn
+```
+Затем переходим в директорию для `сервера` и устанавливаем зависимости.
+```
+cd backend
+yarn
+```
+Нам потребуется одновременно запускать два сервера (для клиента и самого сервера), поэтому установили `concurrently` — утилиту для одновременного выполнения нескольких команд, определенных в файле `package.json:`
 
-### `npm start`
+Запуск
+```
+yarn
+yarn start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Библиотеки
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+`Фронт:`
+- react-router-dom — библиотека для маршрутизации на стороне клиента;
+- emoji-mart — компонент с эмодзи;
+- socket.io-client — клиент socket.io;
+- sass — препроцессор CSS;
+- axios - библиотека, позволяющая делать HTTP-запросы;
+- antd - олноценная дизайн-система, визуальный язык;
+- ant-design/icons - иконки;
+- tinycolor2 - небольшая и быстрая библиотека для работы с цветами и их преобразования в JavaScript;
+- date-fns - библиотека, которая предлагает вам целый ряд вспомогательных методов для работы с датами в JavaScript
 
-### `npm test`
+`Сервер:`
+- express — Node.js-фреймворк для разработки веб-серверов;
+- socket.io — библиотека, облегчающая работу с веб-сокетами;
+- mongoose — ORM для работы с MongoDB;
+- cors — утилита для работы с CORS;
+- nodemon — утилита для запуска сервера для разработки.
+- bcryptjs - адаптивная криптографическая хеш-функция формирования ключа, используемая для защищенного хранения паролей;
+- jsonwebtoken - используется для передачи данных для аутентификации в клиент-серверных приложениях;
+- express-validator - позволяет стандартизировать ответы на ошибки валидации;
+- config - позволяет нам определить набор параметров по умолчанию.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Проверка работоспособности приложения
+Находясь в корневой директории проекта, выполняем команду `yarn dev` и открываем браузер по адресу http://localhost:3000.
 
-### `npm run build`
+    Форма авторизации
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![img.png](img.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    Форма регистрации
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![img_1.png](img_1.png)
 
-### `npm run eject`
+    Страница комнат
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+![img_2.png](img_2.png)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    Страница комнаты (чат)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+![img_3.png](img_3.png)
