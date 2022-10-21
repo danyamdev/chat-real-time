@@ -26,7 +26,7 @@ const ChatRooms: React.FC = () => {
     localStorage.removeItem('token');
   };
 
-  const createChatRoom = async () => {
+  const handleCreateChatRoom = async () => {
     if (socketContext.socket && socketContext.user) {
       try {
         const response = await chatRoomAPI.postChatRoom({
@@ -67,7 +67,7 @@ const ChatRooms: React.FC = () => {
     }
   };
 
-  const deleteChatRoom = async (id: string) => {
+  const handleDeleteChatRoom = async (id: string) => {
     if (socketContext.socket) {
       socketContext.socket.emit('ROOM:DELETE', id);
 
@@ -75,7 +75,7 @@ const ChatRooms: React.FC = () => {
     }
   };
 
-  const connectToChatRoom = (id: string) => {
+  const handleConnectToChatRoom = (id: string) => {
     if (socketContext.socket) {
       socketContext.socket.emit('ROOM:JOIN', id);
 
@@ -100,7 +100,7 @@ const ChatRooms: React.FC = () => {
             <Form
               name="chatroom"
               className="auth-form"
-              onFinish={createChatRoom}
+              onFinish={handleCreateChatRoom}
             >
               <Form.Item
                 name="chatroom"
@@ -137,7 +137,7 @@ const ChatRooms: React.FC = () => {
                 <div
                   key={item._id}
                   className="chat-rooms-item"
-                  onClick={() => connectToChatRoom(item._id)}
+                  onClick={() => handleConnectToChatRoom(item._id)}
                 >
                   {item?.name}
                 </div>
@@ -158,10 +158,10 @@ const ChatRooms: React.FC = () => {
                 (item) =>
                   item.userId === socketContext.user?.userId && (
                     <div key={item._id} className="chat-rooms-item">
-                      <span onClick={() => connectToChatRoom(item._id)}>
+                      <span onClick={() => handleConnectToChatRoom(item._id)}>
                         {item.name}
                       </span>
-                      <span onClick={() => deleteChatRoom(item._id)}>
+                      <span onClick={() => handleDeleteChatRoom(item._id)}>
                         <DeleteTwoTone twoToneColor="#eb2f96" />
                       </span>
                     </div>
