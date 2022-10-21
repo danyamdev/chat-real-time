@@ -15,7 +15,7 @@ const ChatInput: React.FC<IChatInput> = ({ id }) => {
 
   const [value, setValue] = useState('');
 
-  const sendHelper = () => {
+  const handleSend = () => {
     if (socketContext.socket && id && value) {
       socketContext.socket.emit('ROOM:NEW_MESSAGE', {
         chatRoomId: id,
@@ -29,7 +29,7 @@ const ChatInput: React.FC<IChatInput> = ({ id }) => {
   useEffect(() => {
     const onKeyDown = (e: any) => {
       if (e.keyCode === 13) {
-        sendHelper();
+        handleSend();
       }
     };
 
@@ -47,7 +47,7 @@ const ChatInput: React.FC<IChatInput> = ({ id }) => {
         size="large"
         placeholder="Введите текст сообщения…"
       />
-      <div className="chat-input__actions" onClick={sendHelper}>
+      <div className="chat-input__actions" onClick={handleSend}>
         <Button type="link" shape="circle" icon={<SendOutlined />} />
       </div>
     </div>

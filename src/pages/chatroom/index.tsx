@@ -24,7 +24,7 @@ const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
 
   const [chatRoom, setChatRoom] = useState<TChatRoom>();
-  const [users, setUsers] = useState<TUserToken[]>([]);
+  const [allUsers, setAllUsers] = useState<TUserToken[]>([]);
 
   const getByIdChatRoom = async () => {
     if (socketContext.socket && id) {
@@ -40,7 +40,7 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  const exitHelper = () => {
+  const handleClickExit = () => {
     if (socketContext.socket) {
       socketContext.socket.emit('ROOM:LEAVE');
 
@@ -48,8 +48,8 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  const setUsersHelper = (users: TUserToken[]) => {
-    setUsers(users);
+  const setUsers = (users: TUserToken[]) => {
+    setAllUsers(users);
   };
 
   const noticeHelper = (obj: { text: string; owner: string }) =>
@@ -60,7 +60,7 @@ const ChatRoom: React.FC = () => {
       description: obj.text,
     });
 
-  const deleteHelper = (obj: { text: string; owner: string }) => {
+  const deleteChatRoom = (obj: { text: string; owner: string }) => {
     noticeHelper(obj);
 
     navigate('/chat-rooms');
@@ -72,9 +72,9 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     if (socketContext.socket) {
-      socketContext.socket?.on('ROOM:SET_USERS', setUsersHelper);
+      socketContext.socket?.on('ROOM:SET_USERS', setUsers);
       socketContext.socket?.on('ROOM:OWNER', noticeHelper);
-      socketContext.socket?.on('ROOM:DELETE', deleteHelper);
+      socketContext.socket?.on('ROOM:DELETE', deleteChatRoom);
     }
   }, [socketContext.socket]);
 
@@ -89,7 +89,7 @@ const ChatRoom: React.FC = () => {
             </div>
 
             <div className="chat-room__sidebar-users">
-              {users.map((user) => (
+              {allUsers.map((user) => (
                 <div key={user.userId} className="chat-room__sidebar-user">
                   <Avatar user={user} />
                   <span>{user.login}</span>
@@ -113,7 +113,7 @@ const ChatRoom: React.FC = () => {
                     Удалить
                   </Button>
                 )}
-                <Button type="primary" onClick={exitHelper}>
+                <Button type="primary" onClick={handleClickExit}>
                   Выйти
                 </Button>
               </div>
